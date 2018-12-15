@@ -10,6 +10,7 @@ export default class Nav extends React.Component<any, any> {
         <ul>
           <li><Link to="/">Home</Link></li>
           <li><Link to="/profile">Profile</Link></li>
+          <li><Link to="/public">Public</Link></li>
           <li>
             <button onClick={isAuthenticated()?logout:login}>
               {isAuthenticated() ? "Log-out": "Log-in"}

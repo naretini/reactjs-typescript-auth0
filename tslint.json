@@ -1,4 +1,7 @@
 {
+  "jsRules": {
+    "no-console": false
+  },
   "rules": {
     "no-debugger":false,
     "no-console": false,

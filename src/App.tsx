@@ -5,6 +5,7 @@ import { Route, Redirect } from 'react-router-dom'
 
 import Home from './Home'
 import Profile from './Profile'
+import Public from './Public'
 import Nav from './Nav'
 import Callback from './Callback'
 import Auth from './Auth/Auth'
@@ -28,6 +29,10 @@ class App extends React.Component<any, any> {
             path="/"
             exact={true}
             render={props => <Home auth={this.auth} {...props} />}
+          />
+          <Route
+            path="/public"
+            component={Public} 
           />
           <Route
             path="/callback"
