@@ -2,14 +2,18 @@ import * as React from 'react';
 
 
 
-class Public extends React.Component<any, any>{
+class Private extends React.Component<any, any>{
 
     public state = {
         message: ""
     }
 
     public componentDidMount(){
-        fetch('/public').then(response=>{
+        console.log(this.props)
+        fetch('/private', {
+            headers: {Authorization : `Bearer ${this.props.auth.getAccessToken()}`}
+        })
+        .then(response=>{
             if(response.ok){
                 return response.json()
             }
@@ -21,10 +25,10 @@ class Public extends React.Component<any, any>{
 
     public render() {
         return (
-            <p>{this.state.message} </p>
+            <p>{this.state.message}</p>
         );
     }
 }
 
 
-export default Public;
+export default Private;

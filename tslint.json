@@ -1,6 +1,9 @@
 {
   "jsRules": {
-    "no-console": false
+    "no-console": false,
+    "object-literal-sort-keys": [
+      false
+    ]
   },
   "rules": {
     "no-debugger":false,

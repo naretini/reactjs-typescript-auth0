@@ -4,7 +4,7 @@ import * as auth0 from 'auth0-js'
 
 export default class Auth {
 
-    private userProfile:any;
+    private userProfile: any;
     private history: any;
     private auth0: any;
 
@@ -16,6 +16,7 @@ export default class Auth {
             domain: process.env.REACT_APP_AUTH0_DOMAIN as string,
             clientID: process.env.REACT_APP_AUTH0_CLIENT_ID as string,
             redirectUri: process.env.REACT_APP_AUTH0_CALLBACK_URL,
+            audience: process.env.REACT_APP_AUTH0_AUDIENCE,
             responseType: "token id_token",
             scope: "openid profile email",
         })
@@ -59,20 +60,20 @@ export default class Auth {
         return new Date().getTime() < expirestAt;
     }
 
-    public getAccesToken = () =>{
+    public getAccessToken = () => {
         const accessToken = localStorage.getItem('access_token');
-        if(!accessToken){
+        if (!accessToken) {
             throw new Error("No access token found");
         }
         return accessToken;
     }
 
-    public getProfile = (cb:any) => {
-        if(this.userProfile){
+    public getProfile = (cb: any) => {
+        if (this.userProfile) {
             return cb(this.userProfile);
         }
-        this.auth0.client.userInfo(this.getAccesToken(), (err:any, profile:any) =>{
-            if(profile){
+        this.auth0.client.userInfo(this.getAccessToken(), (err: any, profile: any) => {
+            if (profile) {
                 this.userProfile = profile;
             }
             cb(profile, err)
