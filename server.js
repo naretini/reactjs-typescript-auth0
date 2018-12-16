@@ -4,7 +4,7 @@ require('dotenv').config();
 
 const jwt = require('express-jwt'); // Validate JWT and set req.user
 const jwksRsa = require('jwks-rsa'); //Retrieve RSA keys from a JSON WEb Key set (JWKS) endpoint
-
+const checkScope = require('express-jwt-authz'); // Validate JWT scopes
 
 const checkJwt = jwt({
     // Dynamically provide a signing key based on the kid in the header
@@ -37,6 +37,17 @@ app.get("/public", (req, res) => {
 app.get("/private", checkJwt, (req, res) => {
     res.json({
         message: "Hello from a PRIVATE API! (For logged-in users only)"
+    });
+});
+
+app.get("/courses", checkJwt, checkScope(["read:courses"]), (req, res) => {
+    res.json({
+        courses: [
+            {id: 1 , title: "Course title 01"},
+            {id: 2 , title: "Course title 02"},
+            {id: 3 , title: "Course title 03"},
+            {id: 4 , title: "Course title 04"}
+        ]
     });
 });
 

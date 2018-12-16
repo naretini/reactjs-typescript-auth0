@@ -7,10 +7,12 @@ export default class Auth {
     private userProfile: any;
     private history: any;
     private auth0: any;
+    private requestedScopes:string;
 
     public constructor(history: any) {
         this.history = history;
         this.userProfile = null;
+        this.requestedScopes = "openid profile email read:courses";
 
         this.auth0 = new auth0.WebAuth({
             domain: process.env.REACT_APP_AUTH0_DOMAIN as string,
@@ -18,7 +20,7 @@ export default class Auth {
             redirectUri: process.env.REACT_APP_AUTH0_CALLBACK_URL,
             audience: process.env.REACT_APP_AUTH0_AUDIENCE,
             responseType: "token id_token",
-            scope: "openid profile email",
+            scope: this.requestedScopes,
         })
 
         console.log(this.auth0, this.history)
@@ -34,6 +36,8 @@ export default class Auth {
         localStorage.removeItem("access_token")
         localStorage.removeItem("id_token")
         localStorage.removeItem("expires_at")
+        localStorage.removeItem("scopes")
+
         this.history.push("/");
         this.auth0.logout({
             clientID: process.env.REACT_APP_AUTH0_CLIENT_ID,
@@ -52,6 +56,14 @@ export default class Auth {
                 console.log(err)
             }
         })
+    }
+
+    public userHasScopes(scopes:string[]) {
+        const grantedScopes:any = (
+            JSON.parse(localStorage.getItem('scopes')as string) || ""
+        ).split(" ");
+
+        return scopes.every(scope => grantedScopes.includes(scope))
     }
 
 
@@ -86,8 +98,14 @@ export default class Auth {
             authResult.expiresIn * 1000 + new Date().getTime()
         )
 
+        // If there is a value on the `scope` param from the authResult
+        // use it to set scopes in the session for the user. Otherwise
+        // use the scopes as requested. If no scopes were requested, set it to nothing
+        const scopes = authResult.scope || this.requestedScopes || '';
+
         localStorage.setItem("access_token", authResult.accessToken)
         localStorage.setItem("id_token", authResult.idToken)
         localStorage.setItem("expires_at", expireAt)
+        localStorage.setItem("scopes", JSON.stringify(scopes))
     }
 }
